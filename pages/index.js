@@ -22,7 +22,7 @@ function Frame(props) {
     }} >Go</LoadingButton>
     </Stack>
     <div style={{ top: '60px', right: '3px', bottom: '3px', left: '3px', position: 'absolute'}}>
-      <Iframe url={iframeUrl} name={props.name} width={"100%"} height={"100%"} styles={{border: '1px solid gray', borderRadius: '10px'}} />
+      <Iframe url={iframeUrl} name={props.name} width={"100%"} height={"100%"} styles={{border: '1px solid gray', borderRadius: '10px'}} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture full" />
     </div>
   </div>
 }
