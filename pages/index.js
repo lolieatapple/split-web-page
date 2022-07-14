@@ -15,7 +15,7 @@ function Frame(props) {
     <TextField label="Enter Web Site URL Here" variant="standard" fullWidth size='small' value={url} onChange={(e)=>setUrl(e.target.value)}/>
     <LoadingButton variant='contained' onClick={()=>{
       let _url = url;
-      if(!_url.startsWith('http')) _url = 'http://' + _url;
+      if(!_url.startsWith('http')) _url = 'https://' + _url;
       setIframeUrl(_url);
       console.log('url', _url);
       // window.document.frames[props.name].location = _url;
