@@ -1,10 +1,18 @@
 import { LoadingButton } from '@mui/lab'
-import { Button, Paper, Stack, TextField } from '@mui/material'
+import { Button, Paper, Stack, TextField, Tooltip } from '@mui/material'
 import Head from 'next/head'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import styles from '../styles/Home.module.css'
 import Iframe from 'react-iframe'
+import WbSunnyIcon from '@mui/icons-material/WbSunny';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+
+let DarkReader;
+if (typeof window !== 'undefined') {
+  DarkReader = require('darkreader');
+}
+
 
 
 function Frame(props) {
@@ -29,6 +37,30 @@ function Frame(props) {
 
 export default function Home() {
   const [mode, setMode] = useState("1");
+
+  const [updateDark, setUpdateDark] = useState(0);
+
+  const isDarkMode = useMemo(() => {
+    return DarkReader ? DarkReader.isEnabled() : false;
+  }, [updateDark]);
+
+  const handleDarkMode = () => {
+    if (DarkReader) {
+      const isEnabled = DarkReader.isEnabled();
+      if (isEnabled) {
+        DarkReader.disable();
+        setUpdateDark(Date.now());
+      } else {
+        DarkReader.enable({
+          brightness: 100,
+          contrast: 90,
+          sepia: 10
+        });
+        setUpdateDark(Date.now());
+      }
+    }
+  }
+
   return (
     <div className={styles.container}>
       <Head>
@@ -41,6 +73,11 @@ export default function Home() {
         <Paper elevation={4}>
           <Stack spacing={1} direction="row" sx={{padding: '10px'}}>
             <Image src="/spliterLogo.png" alt="logo" width={200} height={30} style={{marginTop:'4px'}} />
+            <Tooltip title="Toggle Dark Mode">
+            {
+              isDarkMode ? <WbSunnyIcon onClick={handleDarkMode} style={{cursor:'pointer', marginTop: '10px'}} /> : <DarkModeIcon onClick={handleDarkMode} style={{cursor:'pointer', marginTop: '10px'}} />
+            }
+            </Tooltip>
             <Button variant={mode === "1" ? 'contained' : ''} onClick={()=>setMode('1')} >
               <Image src="/spliter2.png" alt="2" width={40} height={30} />
             </Button>
@@ -49,7 +86,7 @@ export default function Home() {
             <Button variant={mode === "4" ? 'contained' : ''}><Image src="/spliter5.png" alt="2" width={40} height={30} onClick={()=>setMode('4')} /></Button>
           </Stack>
         </Paper>
-        <Stack spacing={1} direction={['1', '2', '4'].includes(mode) ? 'row': 'column'} sx={{paddingTop: '10px'}} fullWidth>
+        <Stack spacing={1} direction={['1', '2', '4'].includes(mode) ? 'row': 'column'} sx={{paddingTop: '10px'}} >
           <Paper elevation={4} style={{width: '100%', height: ['1', '2'].includes(mode) ? '94vh' : '46vh'}}>
             <Frame mode={mode} name={'a'} />
           </Paper>
@@ -63,7 +100,7 @@ export default function Home() {
           }
         </Stack>
         {
-          ['4'].includes(mode) && <Stack spacing={1} direction={['1', '2', '4'].includes(mode) ? 'row': 'column'} sx={{paddingTop: '10px'}} fullWidth>
+          ['4'].includes(mode) && <Stack spacing={1} direction={['1', '2', '4'].includes(mode) ? 'row': 'column'} sx={{paddingTop: '10px'}} >
           <Paper elevation={4} style={{width: '100%', height: ['1', '2'].includes(mode) ? '94vh' :  '46vh'}}>
             <Frame mode={mode} name={'d'}/>
           </Paper>
